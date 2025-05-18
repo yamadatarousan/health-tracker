@@ -33,7 +33,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
   }
 
-  // ユーザーが存在するか確認
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -55,5 +54,40 @@ export async function POST(request: Request) {
     return NextResponse.json(record);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create record' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  const { id, event, feeling } = await request.json();
+
+  if (!id || !event || !feeling) {
+    return NextResponse.json({ error: 'id, event, and feeling are required' }, { status: 400 });
+  }
+
+  try {
+    const record = await prisma.record.update({
+      where: { id },
+      data: { event, feeling, updatedAt: new Date() },
+    });
+    return NextResponse.json(record);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update record' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+
+  if (!id) {
+    return NextResponse.json({ error: 'id is required' }, { status: 400 });
+  }
+
+  try {
+    await prisma.record.delete({
+      where: { id },
+    });
+    return NextResponse.json({ message: 'Record deleted successfully' });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete record' }, { status: 500 });
   }
 }
