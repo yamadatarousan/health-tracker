@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DayBar from '@/app/components/DayBar';
+import PdfExport from '@/app/components/PdfExport';
 
 const getMonthDays = (year: number, month: number): string[] => {
   const days: string[] = [];
@@ -68,6 +69,12 @@ export default function Home() {
           次月 ►
         </motion.button>
       </div>
+
+      {/* PDFエクスポートボタン */}
+      <div className="flex justify-end mb-4">
+        <PdfExport userId={userId} year={year} month={month} />
+      </div>
+
       <motion.div
         className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory"
         drag="x"
