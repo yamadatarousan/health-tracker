@@ -24,12 +24,14 @@ export default function DayBar({ date, userId }: { date: string; userId: number 
     const fetchRecords = async () => {
       try {
         setIsLoading(true);
+        setRecords([]); // 状態リセット
         const response = await fetch(`/api/records?date=${date}&userId=${userId}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Failed to fetch records');
         }
         const data = await response.json();
+        console.log(`Records for ${date}:`, data); // デバッグ
         setRecords(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'データの取得に失敗しました');

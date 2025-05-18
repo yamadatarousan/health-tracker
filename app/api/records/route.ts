@@ -11,17 +11,26 @@ export async function GET(request: Request) {
   }
 
   try {
+    // UTCで日付を構築
+    const [year, month, day] = date.split('-').map(Number);
+    const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+
     const records = await prisma.record.findMany({
       where: {
         userId: Number(userId),
         date: {
-          gte: new Date(date),
-          lte: new Date(`${date}T23:59:59.999Z`),
+          gte: startOfDay,
+          lte: endOfDay,
         },
       },
     });
+
+    // デバッグ: 取得したレコードの日付をログ
+    console.log(`Fetched records for ${date}:`, records.map(r => r.date));
     return NextResponse.json(records);
   } catch (error) {
+    console.error(`Error fetching records for ${date}:`, error);
     return NextResponse.json({ error: 'Failed to fetch records' }, { status: 500 });
   }
 }
@@ -42,10 +51,12 @@ export async function POST(request: Request) {
   }
 
   try {
+    const [year, month, day] = date.split('-').map(Number);
+    const recordDate = new Date(Date.UTC(year, month - 1, day));
     const record = await prisma.record.create({
       data: {
         userId,
-        date: new Date(date),
+        date: recordDate,
         hour,
         event,
         feeling,
@@ -53,6 +64,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(record);
   } catch (error) {
+    console.error('Error creating record:', error);
     return NextResponse.json({ error: 'Failed to create record' }, { status: 500 });
   }
 }
@@ -71,6 +83,7 @@ export async function PATCH(request: Request) {
     });
     return NextResponse.json(record);
   } catch (error) {
+    console.error('Error updating record:', error);
     return NextResponse.json({ error: 'Failed to update record' }, { status: 500 });
   }
 }
@@ -88,6 +101,7 @@ export async function DELETE(request: Request) {
     });
     return NextResponse.json({ message: 'Record deleted successfully' });
   } catch (error) {
+    console.error('Error deleting record:', error);
     return NextResponse.json({ error: 'Failed to delete record' }, { status: 500 });
   }
 }
