@@ -208,7 +208,7 @@ export default function DayBar({ date, userId }: { date: string; userId: number 
                     </button>
                   </div>
                 </div>
-              ) : (selectedHour === hour || editingId) ? (
+              ) : editingId === record?.id ? (
                 <motion.div
                   className="mt-1 overflow-hidden"
                   initial={{ height: 0, opacity: 0 }}
@@ -232,7 +232,7 @@ export default function DayBar({ date, userId }: { date: string; userId: number 
                   <div className="flex space-x-2 mt-1">
                     <button
                       className="flex-1 text-xs bg-blue-500 text-white p-1 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                      onClick={() => (editingId ? handleEdit(editingId) : handleSubmit(hour))}
+                      onClick={() => handleEdit(editingId)}
                       disabled={!event || !feeling}
                     >
                       保存
