@@ -245,6 +245,43 @@ export default function DayBar({ date, userId }: { date: string; userId: number 
                     </button>
                   </div>
                 </motion.div>
+              ) : selectedHour === hour ? (
+                <motion.div
+                  className="mt-1 overflow-hidden"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <input
+                    className="w-full text-sm p-1 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none"
+                    placeholder="出来事"
+                    value={event}
+                    onChange={(e) => setEvent(e.target.value)}
+                  />
+                  <input
+                    className="w-full text-sm p-1 mt-1 border rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none"
+                    placeholder="感情"
+                    value={feeling}
+                    onChange={(e) => setFeeling(e.target.value)}
+                  />
+                  {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+                  <div className="flex space-x-2 mt-1">
+                    <button
+                      className="flex-1 text-xs bg-blue-500 text-white p-1 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      onClick={() => handleSubmit(hour)}
+                      disabled={!event || !feeling}
+                    >
+                      保存
+                    </button>
+                    <button
+                      className="flex-1 text-xs bg-gray-200 text-gray-700 p-1 rounded hover:bg-gray-300"
+                      onClick={handleCancel}
+                    >
+                      キャンセル
+                    </button>
+                  </div>
+                </motion.div>
               ) : null}
             </motion.div>
           );
